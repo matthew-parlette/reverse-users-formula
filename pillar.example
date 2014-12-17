@@ -30,3 +30,10 @@ users:
       G@id:example3.com:
         - purge: True
         - force: True
+    ssh_key_type: rsa
+    ssh_keys:
+      privkey: |
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
+      pubkey: ssh-rsa ... user.b

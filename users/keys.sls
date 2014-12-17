@@ -14,6 +14,15 @@ include:
 
   {% if 'ssh_keys' in user %}
   {% set key_type = 'id_' + user.get('ssh_key_type', 'rsa') %}
+user_keydir_{{ name }}:
+  file.directory:
+    - name: {{ user.get('home', '/home/{0}'.format(name)) }}/.ssh
+    - user: {{ name }}
+    - group: {{ name }}
+    - makedirs: True
+    - mode: 700
+    - require:
+      - user: {{ name }}
 user_{{ name }}_private_key:
   file.managed:
     - name: {{ user.get('home', '/home/{0}'.format(name)) }}/.ssh/{{ key_type }}

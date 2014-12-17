@@ -1,3 +1,6 @@
+include:
+  - users
+
 {% for name, user in pillar.get('users', {}).items() if user.absent is not defined or not user.absent %}
 {%- if user == None -%}
 {%- set user = {} -%}
@@ -15,28 +18,22 @@ user_{{ name }}_private_key:
   file.managed:
     - name: {{ user.get('home', '/home/{0}'.format(name)) }}/.ssh/{{ key_type }}
     - user: {{ name }}
-    - group: {{ user_group }}
+    - group: {{ name }}
     - mode: 600
     - show_diff: False
     - contents_pillar: users:{{ name }}:ssh_keys:privkey
     - require:
-      - user: {{ name }}_user
-      {% for group in user.get('groups', []) %}
-      - group: {{ name }}_{{ group }}_group
-      {% endfor %}
+      - user: {{ name }}
 user_{{ name }}_public_key:
   file.managed:
     - name: {{ user.get('home', '/home/{0}'.format(name)) }}/.ssh/{{ key_type }}.pub
     - user: {{ name }}
-    - group: {{ user_group }}
+    - group: {{ name }}
     - mode: 644
     - show_diff: False
     - contents_pillar: users:{{ name }}:ssh_keys:pubkey
     - require:
-      - user: {{ name }}_user
-      {% for group in user.get('groups', []) %}
-      - group: {{ name }}_{{ group }}_group
-      {% endfor %}
+      - user: {{ name }}
   {% endif %}
 
 {% endfor %}
